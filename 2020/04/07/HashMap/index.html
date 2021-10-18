@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HashMap | 71ao's blog</title><meta name="keywords" content="hashMap"><meta name="author" content="71ao sdd"><meta name="copyright" content="71ao sdd"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简介HashMap在1.8之前是由数组+链表组成的散列表，在1.8之后（包括1.8）变成了数组+链表+红黑树。 构造方法HashMap()  无参构造方法指定负载因子，默认为0.75（最好不要修改），那么它的边界值是0.75X。 HashMap(int initialCapacity)指定初始容量，会跳到另一个构造方法 HashMap(int initialCapacity, float load">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HashMap">
+<meta property="og:url" content="http://www.71ao.top/2020/04/07/HashMap/index.html">
+<meta property="og:site_name" content="71ao&#39;s blog">
+<meta property="og:description" content="简介HashMap在1.8之前是由数组+链表组成的散列表，在1.8之后（包括1.8）变成了数组+链表+红黑树。 构造方法HashMap()  无参构造方法指定负载因子，默认为0.75（最好不要修改），那么它的边界值是0.75X。 HashMap(int initialCapacity)指定初始容量，会跳到另一个构造方法 HashMap(int initialCapacity, float load">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/virtual-youtuber-dennou-shoujo-blue-eyes-white-hair-profile-view.jpeg">
+<meta property="article:published_time" content="2020-04-07T08:45:58.000Z">
+<meta property="article:modified_time" content="2021-10-12T02:37:26.395Z">
+<meta property="article:author" content="71ao sdd">
+<meta property="article:tag" content="hashMap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/virtual-youtuber-dennou-shoujo-blue-eyes-white-hair-profile-view.jpeg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/43485833"><link rel="canonical" href="http://www.71ao.top/2020/04/07/HashMap/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HashMap',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-12 10:37:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/virtual-youtuber-dennou-shoujo-blue-eyes-white-hair-profile-view.jpeg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">71ao's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HashMap</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-04-07T08:45:58.000Z" title="发表于 2020-04-07 16:45:58">2020-04-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-10-12T02:37:26.395Z" title="更新于 2021-10-12 10:37:26">2021-10-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HashMap"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>HashMap在1.8之前是由数组+链表组成的散列表，在1.8之后（包括1.8）变成了数组+链表+红黑树。</p>
+<h1 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h1><h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap()"></a>HashMap()</h2><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(53).png" alt="d3df39eb629f7526d5a7691a82447a53.png"></p>
+<p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(54).png" alt="7976e400905450530140c6fbf20aeb26.png"></p>
+<p>无参构造方法指定负载因子，默认为0.75（最好不要修改），那么它的边界值是0.75X。</p>
+<h2 id="HashMap-int-initialCapacity"><a href="#HashMap-int-initialCapacity" class="headerlink" title="HashMap(int initialCapacity)"></a>HashMap(int initialCapacity)</h2><p>指定初始容量，会跳到另一个构造方法<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(55).png" alt="8185e8128fd84430746f39fef57ec502.png"></p>
+<h2 id="HashMap-int-initialCapacity-float-loadFactor"><a href="#HashMap-int-initialCapacity-float-loadFactor" class="headerlink" title="HashMap(int initialCapacity, float loadFactor)"></a>HashMap(int initialCapacity, float loadFactor)</h2><p>这个构造方法不仅可以指定初始容量，还可以指定负载因子<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(56).png" alt="70627d4a22d0b591a3537107028b06ba.png"><br>指定容量不能小于0，不能超过最大值<strong>2^30</strong><br>负载因子不能小于等于0，不能不是数字。<br><strong>其实我们指定HashMap的初始容量并不是真正的初始容量，它默认的初始容量必须为2的n次幂，如果不是2的n次幂，它自动转换为比你指定的容量大的最小2的n次幂，这个转换方法就是tableSizeFor。</strong></p>
+<h2 id="HashMap-Map-lt-extends-K-extends-V-gt-m"><a href="#HashMap-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="HashMap(Map&lt;? extends K, ? extends V&gt; m)"></a>HashMap(Map&lt;? extends K, ? extends V&gt; m)</h2><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(57).png" alt="08a6378b0c7690df9d0f3526823e1e74.png"><br>这个构造方法主要是将其他map转换为HashMap。</p>
+<h1 id="tableSizeFor"><a href="#tableSizeFor" class="headerlink" title="tableSizeFor"></a>tableSizeFor</h1><p>这个方法主要是返回比用户指定容量大或相等的最小2的n次幂。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(58).png" alt="f7c528e794029de3e04505b47f347301.png"><br>先给指定容量减1，这么做是<strong>防止用户给的就是2的n次幂。</strong><br>假设用户给8那么它计算出来就是16，用户给9那么计算就是16.<br>接下来就是计算过程，在这举个栗子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">cap = 9</span><br><span class="line">n = 8</span><br><span class="line">n |= n &gt;&gt;&gt; 1</span><br><span class="line">先右移1位</span><br><span class="line">00000000 00000000 00000000 00000100 &gt;&gt;&gt; 1 = 00000000 00000000 00000000 00000010</span><br><span class="line">再或运算（有1为1）</span><br><span class="line">00000000 00000000 00000000 00000010</span><br><span class="line">00000000 00000000 00000000 00000100</span><br><span class="line">——————————————————</span><br><span class="line">00000000 00000000 00000000 00000110</span><br><span class="line"></span><br><span class="line">n |= n &gt;&gt;&gt; 2</span><br><span class="line">再右移2位</span><br><span class="line">00000000 00000000 00000000 00000110 &gt;&gt;&gt; 2 = 00000000 00000000 00000000 00000001</span><br><span class="line">再或运算</span><br><span class="line">00000000 00000000 00000000 00000110</span><br><span class="line">00000000 00000000 00000000 00000001</span><br><span class="line">——————————————————</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line"></span><br><span class="line">n |= n &gt;&gt;&gt; 4;</span><br><span class="line">再右移4位</span><br><span class="line">00000000 00000000 00000000 00000111 &gt;&gt;&gt; 4 = 00000000 00000000 00000000 00000000</span><br><span class="line">再或运算</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line">00000000 00000000 00000000 00000000</span><br><span class="line">——————————————————</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line"></span><br><span class="line">n |= n &gt;&gt;&gt; 8;</span><br><span class="line">再右移8位</span><br><span class="line">00000000 00000000 00000000 00000111 &gt;&gt;&gt; 8 = 00000000 00000000 00000000 00000000</span><br><span class="line">再或运算</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line">00000000 00000000 00000000 00000000</span><br><span class="line">——————————————————</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line"></span><br><span class="line">n |= n &gt;&gt;&gt; 16;</span><br><span class="line">再右移16位</span><br><span class="line">00000000 00000000 00000000 00000111 &gt;&gt;&gt; 8 = 00000000 00000000 00000000 00000000</span><br><span class="line">再或运算</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line">00000000 00000000 00000000 00000000</span><br><span class="line">——————————————————</span><br><span class="line">00000000 00000000 00000000 00000111</span><br><span class="line"></span><br><span class="line">最后</span><br><span class="line">n = 15</span><br></pre></td></tr></table></figure>
+<p>其实规律不难发现，<strong>这样算的目的就是把1所在最高位后面数全部变为1</strong><br>给定9，减1为8，二进制<br>00000000 00000000 00000000 00000100<br>1后面全为1<br>00000000 00000000 00000000 00000111<br>即15<br>最后，判断得到的n是否越界<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(59).png" alt="2bcd490351779ae1ffcf27ab4709071e.png"><br>再 <strong>n + 1</strong><br>得到16，2的n次幂<br><strong>那么问题来了，为什么右移最大为16位？</strong><br>因为规定最大容量为<strong>2^30</strong>，二进制为<br>00100000 00000000 00000000 00000000<br>最高位第30位<br>根本不需要到32位</p>
+<h1 id="put"><a href="#put" class="headerlink" title="put"></a>put</h1><p>往Map提交数据（键值），这个方法只是层皮，真正是<strong>putVal</strong><br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(60).png" alt="1158d89464580132999da216b042f086.png"></p>
+<h1 id="putVal"><a href="#putVal" class="headerlink" title="putVal"></a>putVal</h1><p>真正提交数据保存的方法。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(61).png" alt="7b178471c5c16d1c49262757b0820b0a.png"><br>第一个值<strong>hash</strong>，是通过<strong>hash方法</strong>得到。<br>新建了四个变量，两个Node型tab，p，和两个int型n，i</p>
+<h2 id="第一次put"><a href="#第一次put" class="headerlink" title="第一次put"></a>第一次put</h2><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(62).png" alt="06ce30ad4a0a3cc0f82232a200ee1581.png"></p>
+<p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(63).png" alt="a9b515f3acc455bcbf3af0d9da91e5cd.png"><br>如果原来的的表是空的（table空或者长度为0）<br>进入<strong>resize方法新建表</strong>，再获得新建的长度。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(64).png" alt="e9c7eea544409c1a73b9a83f9997b683.png"><br>这里与运算，得到索引，第一次添加这里肯定为空，直接新建节点，保存hash值，key，value。赋值到这个索引，如果不为空则会接一个链表。</p>
+<h2 id="非第一次put"><a href="#非第一次put" class="headerlink" title="非第一次put"></a>非第一次put</h2><p>根据前面，非第一次计算出索引，判断这个位置是否存在元素。</p>
+<h3 id="无元素"><a href="#无元素" class="headerlink" title="无元素"></a>无元素</h3><p>没有被占用直接添加进去</p>
+<h3 id="已被占用"><a href="#已被占用" class="headerlink" title="已被占用"></a>已被占用</h3><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(65).png" alt="32dda4a1d85606bd59089f20a768b544.png"></p>
+<h4 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h4><p>如果是已被占用先判断是否和该位元素的hash和key一样，，重复就覆盖原来的Value，并返回原来的Value。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(66).png" alt="36314a60402c5bba4b7b094513d18a64.png"></p>
+<h4 id="非重复"><a href="#非重复" class="headerlink" title="非重复"></a>非重复</h4><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(67).png" alt="cdff8dc686faa9964a920d5fe0edcb4b.png"><br>先判断该占用节点下一个是否为空，为空直接添加，不为空继续判断是否重复。<br>这里关注一点，单链表长度大于等于8就要考虑是否要转为红黑树（还有一条件，表长要达到64）<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(68).png" alt="7b09b6c4bc6d143baf0e3aab3a65d6e5.png"></p>
+<p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(69).png" alt="62e54936a84dbf2c1294410b9bae12c8.png"></p>
+<h1 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h1><p>返回key的hash值，还不是真正的索引<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(70).png" alt="5e354b2b3db9f5dda0205e9ebc2d5334.png"><br><strong>这里key如果为null，那么hash就等于0，也就key为什么可以穿null的原因。</strong><br>先调用hahCode方法（native方法）获得一个值，，再将得到值向右移16位，前后异或。<br>返回到putVal方法中，进行与运算，得到真正的索引<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(71).png" alt="fac62240b5bcfc26cf43e3bfdfe0b962.png"><br><strong>其实经过（右移）&gt;&gt;&gt; ，再异或（^）,再与（&amp;），最后相当于key对n（Map长度）取余，之所以经过那么多运算，是因为这些运算在系统底层更快，直接取余很慢，效率问题。</strong></p>
+<h1 id="resize"><a href="#resize" class="headerlink" title="resize"></a>resize</h1><p>这个重置表或者新建表<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(72).png" alt="24f535661a5ba7d82fe81c520e735e3e.png"><br>获取当前散列表，如果为空那么当前容量为0。<br>获取当前表的边界值，初始为0。<br>新的容量和新的边界值为0</p>
+<h2 id="第一次创建"><a href="#第一次创建" class="headerlink" title="第一次创建"></a>第一次创建</h2><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(73).png" alt="7f0762c7d0b95d6dbbf9c74bfcfe96ee.png"><br>第一次创建，上半部分都没有进入<br>下半部分：<br>获得初始容量2^4,也就是16<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(74).png" alt="383d27ce7ce95383c8f08571ef7dc6dc.png"><br>边界值等于容量与负载因子的积，向下取整。<br>其实上面这部分代码就是为了解决容量和边界值的。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(75).png" alt="a8527b2bba24c58f72d32a2a0d515b93.png"><br>真正的创建表开始了。<br>先新建一个长度为初始容量16的Node数组<br>直接把新建的表赋值给table<br>第一次新建老表肯定为空，那么if不会走了，直接返回<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(76).png" alt="667a0dfe9bcd828258bf51bd042b8b1d.png"></p>
+<h2 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h2><p>非第一次进来，那么就是扩容了。<br>扩容有一难点，就是要rehash，重新计算索引，很麻烦，但jdk巧妙解决这一难点。<br>假设初始容量为16，有key的值为12，hash值12%16=12，那么原理就在12这个位置。扩容为32（比原来容量大的最小2的n次幂），rehash值为12%32=12，与原理没有变化。另有一key的值为25，hash值为25%16=9，rehash为25%32=25=9+16。差了扩容量（32-16=16）。<br>也就是说，如果key值比原来的容量小，那么rehash值还是原来的值，比原来的容量大，rehash就是原来hash值与增加容量的和。<br>具体看源码<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(77).png" alt="6b33d551759219a6f2762436c60c907f.png"><br>遍历数组。<br>取出当前位置节点判断是否为空，不为空就清空原来数组位置（清空给JVM自动回收），如果改位置只有一个数据就直接rehash添加到索引位置。<br>如果是链表<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(78).png" alt="2f0cd447efc367b38e75d7f88dadcc83.png"><br>do-while遍历，根据他的算法，这一步与运算得到的值大于0（索引值为 hash&amp;（oldCap-1）），说明key值比原来容量大，分到另一个表。遍历完后，在添加到新的索引位置。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(79).png" alt="463dc64822e80f39fdca7432cb5990f1.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><p>hashMap什么时候扩容<br>HashMap中的数据元素超过临界值，不是数组中被使用的下标，就会扩容。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(80).png" alt="6b96c17dd9d7a0f8f935ce714929972e.png"><br>当链表的个数超过8个（hash碰撞超过8），并且数组长度小于64，就会扩容。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(81).png" alt="348cfd65576fad7fb2ba2c516a57e59a.png"></p>
+<p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(82).png" alt="df5bf737a931b41566776fb0923eb8d6.png"></p>
+</li>
+<li><p>为什么是链表的临界值是8个<br>JDK是根据泊松分布来设计的。</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">71ao sdd</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.71ao.top/2020/04/07/HashMap/">http://www.71ao.top/2020/04/07/HashMap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.71ao.top" target="_blank">71ao's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hashMap/">hashMap</a></div><div class="post_share"><div class="social-share" data-image="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/virtual-youtuber-dennou-shoujo-blue-eyes-white-hair-profile-view.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/04/08/%E7%BA%A2%E9%BB%91%E6%A0%91/"><img class="prev-cover" src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/rem-close-up-re-zero-kara-hajimeru-isekai-seikatsu.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">红黑树</div></div></a></div><div class="next-post pull-right"><a href="/2020/04/06/Vector/"><img class="next-cover" src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/t0177460114f842c151.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Vector</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">71ao sdd</div><div class="author-info__description">You are the apple of my eye</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/71aoo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/71aoo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:779244202@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">构造方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap"><span class="toc-number">2.1.</span> <span class="toc-text">HashMap()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap-int-initialCapacity"><span class="toc-number">2.2.</span> <span class="toc-text">HashMap(int initialCapacity)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap-int-initialCapacity-float-loadFactor"><span class="toc-number">2.3.</span> <span class="toc-text">HashMap(int initialCapacity, float loadFactor)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap-Map-lt-extends-K-extends-V-gt-m"><span class="toc-number">2.4.</span> <span class="toc-text">HashMap(Map&lt;? extends K, ? extends V&gt; m)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#tableSizeFor"><span class="toc-number">3.</span> <span class="toc-text">tableSizeFor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#put"><span class="toc-number">4.</span> <span class="toc-text">put</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#putVal"><span class="toc-number">5.</span> <span class="toc-text">putVal</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1put"><span class="toc-number">5.1.</span> <span class="toc-text">第一次put</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%9E%E7%AC%AC%E4%B8%80%E6%AC%A1put"><span class="toc-number">5.2.</span> <span class="toc-text">非第一次put</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%85%83%E7%B4%A0"><span class="toc-number">5.2.1.</span> <span class="toc-text">无元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%B2%E8%A2%AB%E5%8D%A0%E7%94%A8"><span class="toc-number">5.2.2.</span> <span class="toc-text">已被占用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%A4%8D"><span class="toc-number">5.2.2.1.</span> <span class="toc-text">重复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E9%87%8D%E5%A4%8D"><span class="toc-number">5.2.2.2.</span> <span class="toc-text">非重复</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hash"><span class="toc-number">6.</span> <span class="toc-text">hash</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#resize"><span class="toc-number">7.</span> <span class="toc-text">resize</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%88%9B%E5%BB%BA"><span class="toc-number">7.1.</span> <span class="toc-text">第一次创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9"><span class="toc-number">7.2.</span> <span class="toc-text">扩容</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 71ao sdd</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'Apf54CiWnak4g05AYgmoRy2F-gzGzoHsz',
+      appKey: 'UcJUCGn8QyuNVFCfO7jNA4Jw',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

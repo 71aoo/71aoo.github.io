@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LinkedHashMap | 71ao's blog</title><meta name="keywords" content="linkedHashMap"><meta name="author" content="71ao sdd"><meta name="copyright" content="71ao sdd"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简介LinkedHashMap，HashMap前面加了个Linked，说明这个Map是有链表结构的。结构示意图（盗的图）该Map在HashMap结构基础上增加了双向链表，以此保证元素的有序。 继承了HashMap的Node，增加了前后指针，改名为Entry。 构造函数LinkedHashMap()调用HashMap的构造方法，多了一个accessOrder参数，指定元素遍历排序，false为插入顺">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LinkedHashMap">
+<meta property="og:url" content="http://www.71ao.top/2020/04/09/LinkedHashMap/index.html">
+<meta property="og:site_name" content="71ao&#39;s blog">
+<meta property="og:description" content="简介LinkedHashMap，HashMap前面加了个Linked，说明这个Map是有链表结构的。结构示意图（盗的图）该Map在HashMap结构基础上增加了双向链表，以此保证元素的有序。 继承了HashMap的Node，增加了前后指针，改名为Entry。 构造函数LinkedHashMap()调用HashMap的构造方法，多了一个accessOrder参数，指定元素遍历排序，false为插入顺">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-60493-landscape.jpg">
+<meta property="article:published_time" content="2020-04-09T08:49:01.000Z">
+<meta property="article:modified_time" content="2021-10-12T02:37:26.397Z">
+<meta property="article:author" content="71ao sdd">
+<meta property="article:tag" content="linkedHashMap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-60493-landscape.jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/43485833"><link rel="canonical" href="http://www.71ao.top/2020/04/09/LinkedHashMap/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LinkedHashMap',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-12 10:37:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-60493-landscape.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">71ao's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LinkedHashMap</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-04-09T08:49:01.000Z" title="发表于 2020-04-09 16:49:01">2020-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-10-12T02:37:26.397Z" title="更新于 2021-10-12 10:37:26">2021-10-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LinkedHashMap"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>LinkedHashMap，HashMap前面加了个Linked，说明这个Map是有链表结构的。<br>结构示意图（盗的图）<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/image-20200729162213825.png" alt="image-20200729162213825"><br>该Map在HashMap结构基础上增加了双向链表，以此保证元素的有序。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/image-20200729162222137.png" alt="image-20200729162222137"></p>
+<p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/image-20200729162228880.png" alt="image-20200729162228880"><br>继承了HashMap的Node，增加了前后指针，改名为Entry。</p>
+<h1 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h1><h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap()"></a>LinkedHashMap()</h2><p><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(99).png" alt="885af45c9dbcc76347c4226134b1ec5a.png"><br>调用HashMap的构造方法，多了一个accessOrder参数，指定元素遍历排序，false为插入顺序，也是默认顺序，true为访问顺序。</p>
+<h2 id="LinkedHashMap-int-initialCapacity"><a href="#LinkedHashMap-int-initialCapacity" class="headerlink" title="LinkedHashMap(int initialCapacity)"></a>LinkedHashMap(int initialCapacity)</h2><p>指定容量<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(100).png" alt="707374dc0381e65334b11f20ee2c5158.png"></p>
+<h2 id="LinkedHashMap-int-initialCapacity-float-loadFactor"><a href="#LinkedHashMap-int-initialCapacity-float-loadFactor" class="headerlink" title="LinkedHashMap(int initialCapacity, float loadFactor)"></a>LinkedHashMap(int initialCapacity, float loadFactor)</h2><p>指定容量和负载因子<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(101).png" alt="8376179d6e840c48bd0d2accc3e65fb2.png"></p>
+<h2 id="LinkedHashMap-int-initialCapacity-float-loadFactor-boolean-accessOrder"><a href="#LinkedHashMap-int-initialCapacity-float-loadFactor-boolean-accessOrder" class="headerlink" title="LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder)"></a>LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder)</h2><p>指定容量，负载因子和遍历顺序。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(102).png" alt="84cba7121ca9eb742ea125fb0bb5104e.png"></p>
+<h2 id="LinkedHashMap-Map-lt-extends-K-extends-V-gt-m"><a href="#LinkedHashMap-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m)"></a>LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m)</h2><p>其他Map转为LinkedHashMap<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(103).png" alt="40ed5081ef8d68931e69f2aff6a74a9a.png"></p>
+<h1 id="put"><a href="#put" class="headerlink" title="put"></a>put</h1><p>看了半天并没有发现put方法踪影<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(104).png" alt="fd88a6450f500f89dc76c32c04fc80fc.png"><br>细想，继承HashMap，用的应该是HashMap的put方法吧，但是这样不和HaspMap结构一样，多出双向链表怎么实现？？？<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(105).png" alt="9276d0a39f2a954c6199008d69f7cfb1.png"><br>设计精妙就在这里，在调用HashMap的newNode方法创建节点时，LinkedHashMap重写了该方法。</p>
+<h1 id="newNode"><a href="#newNode" class="headerlink" title="newNode"></a>newNode</h1><p>重写了HashMap的newNode方法，改为建立一个Entry，并调用linkNodeLast方法，连接各个节点<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(106).png" alt="a8d9256f4b0e5bf205a54d9f100692c3.png"></p>
+<h1 id="linkNodeLast"><a href="#linkNodeLast" class="headerlink" title="linkNodeLast"></a>linkNodeLast</h1><p>连接新建的节点<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(107).png" alt="616c03057efe24e39c1c49d7e9eceb26.png"><br>新增加节点时，当前链表的尾部变成了该节点。<br>如果尾部都为空，那么说明该链表为空。新建的节点即为头部也为尾部。<br>如果不为空，那么新建节点的前驱节点为当前链表的尾结点，当前链表的尾结点的后驱节点为新建节点。</p>
+<h1 id="get"><a href="#get" class="headerlink" title="get"></a>get</h1><p>get重写了HashMap的get方法，多增加一个afterNodeAccess排序方法。<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(108).png" alt="74ca88c0e95eecd5e5773ca6290393db.png"></p>
+<h2 id="accessOrder-false"><a href="#accessOrder-false" class="headerlink" title="accessOrder=false"></a>accessOrder=false</h2><p>遍历时链表默认插入顺序，即谁先put，谁排前。</p>
+<h2 id="accessOrder-true"><a href="#accessOrder-true" class="headerlink" title="accessOrder=true"></a>accessOrder=true</h2><p>重新排序链表，调用afterNodeAccess方法。</p>
+<h1 id="afterNodeAccess"><a href="#afterNodeAccess" class="headerlink" title="afterNodeAccess"></a>afterNodeAccess</h1><p>访问顺序排序<br><img src="https://gitee.com/Playwi0/MyImage/raw/master/NoteImage/Image(109).png" alt="b911aa5d514e2280391cbce033886385.png"><br>当访问这个元素时（get），这个元素就会被放到链表的尾部，这样当前访问的元素永远比上一个元素顺序靠后，而未被访问过元素还是按插入顺序排序。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">71ao sdd</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.71ao.top/2020/04/09/LinkedHashMap/">http://www.71ao.top/2020/04/09/LinkedHashMap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.71ao.top" target="_blank">71ao's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/linkedHashMap/">linkedHashMap</a></div><div class="post_share"><div class="social-share" data-image="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-60493-landscape.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/04/10/ConcurrentHashMap/"><img class="prev-cover" src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/anime-girl-valentine-s-day-2018-shy-expression-cute.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">ConcurrentHashMap</div></div></a></div><div class="next-post pull-right"><a href="/2020/04/09/TreeMap/"><img class="next-cover" src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-75059-landscape.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TreeMap</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">71ao sdd</div><div class="author-info__description">You are the apple of my eye</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/71aoo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/71aoo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:779244202@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashMap"><span class="toc-number">2.1.</span> <span class="toc-text">LinkedHashMap()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashMap-int-initialCapacity"><span class="toc-number">2.2.</span> <span class="toc-text">LinkedHashMap(int initialCapacity)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashMap-int-initialCapacity-float-loadFactor"><span class="toc-number">2.3.</span> <span class="toc-text">LinkedHashMap(int initialCapacity, float loadFactor)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashMap-int-initialCapacity-float-loadFactor-boolean-accessOrder"><span class="toc-number">2.4.</span> <span class="toc-text">LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashMap-Map-lt-extends-K-extends-V-gt-m"><span class="toc-number">2.5.</span> <span class="toc-text">LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#put"><span class="toc-number">3.</span> <span class="toc-text">put</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#newNode"><span class="toc-number">4.</span> <span class="toc-text">newNode</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#linkNodeLast"><span class="toc-number">5.</span> <span class="toc-text">linkNodeLast</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get"><span class="toc-number">6.</span> <span class="toc-text">get</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#accessOrder-false"><span class="toc-number">6.1.</span> <span class="toc-text">accessOrder&#x3D;false</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#accessOrder-true"><span class="toc-number">6.2.</span> <span class="toc-text">accessOrder&#x3D;true</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#afterNodeAccess"><span class="toc-number">7.</span> <span class="toc-text">afterNodeAccess</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 71ao sdd</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'Apf54CiWnak4g05AYgmoRy2F-gzGzoHsz',
+      appKey: 'UcJUCGn8QyuNVFCfO7jNA4Jw',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

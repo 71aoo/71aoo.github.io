@@ -1,0 +1,545 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>论文笔记：TheArt,Science,and Engineering of Fuzzing: A Survey | 71ao's blog</title><meta name="keywords" content="fuzz"><meta name="author" content="71ao"><meta name="copyright" content="71ao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="论文笔记：The Art, Science, and Engineering of Fuzzing: A Survey  前言：刚接触fuzz，有些地方可能不是很了解。希望大佬们不吝赐教（轻喷），指出有误地方， 不胜感激。  论文目的 Fuzzing社区越来越活跃，无论是学术界还是工业界，关于Fuzzing的项目，文章越来越多。虽然Fuzzing发展越来越好，但是有点像野蛮生长，很多术语不统一，这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记：TheArt,Science,and Engineering of Fuzzing: A Survey">
+<meta property="og:url" content="http://www.71ao.top/2022/04/09/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9ATheArt-Science-andEngineeringofFuzzing-ASurvey/index.html">
+<meta property="og:site_name" content="71ao&#39;s blog">
+<meta property="og:description" content="论文笔记：The Art, Science, and Engineering of Fuzzing: A Survey  前言：刚接触fuzz，有些地方可能不是很了解。希望大佬们不吝赐教（轻喷），指出有误地方， 不胜感激。  论文目的 Fuzzing社区越来越活跃，无论是学术界还是工业界，关于Fuzzing的项目，文章越来越多。虽然Fuzzing发展越来越好，但是有点像野蛮生长，很多术语不统一，这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-210449-landscape.jpg">
+<meta property="article:published_time" content="2022-04-09T03:24:14.000Z">
+<meta property="article:modified_time" content="2022-04-09T03:33:09.915Z">
+<meta property="article:author" content="71ao">
+<meta property="article:tag" content="fuzz">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-210449-landscape.jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/43485833"><link rel="canonical" href="http://www.71ao.top/2022/04/09/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9ATheArt-Science-andEngineeringofFuzzing-ASurvey/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '论文笔记：TheArt,Science,and Engineering of Fuzzing: A Survey',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-04-09 11:33:09'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-210449-landscape.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">71ao's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">论文笔记：TheArt,Science,and Engineering of Fuzzing: A Survey</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-04-09T03:24:14.000Z" title="发表于 2022-04-09 11:24:14">2022-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-04-09T03:33:09.915Z" title="更新于 2022-04-09 11:33:09">2022-04-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="论文笔记：TheArt,Science,and Engineering of Fuzzing: A Survey"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>论文笔记：The Art, Science, and Engineering of Fuzzing: A Survey</h1>
+<blockquote>
+<p>前言：刚接触fuzz，有些地方可能不是很了解。希望大佬们不吝赐教（轻喷），指出有误地方， 不胜感激。</p>
+</blockquote>
+<h1>论文目的</h1>
+<p>Fuzzing社区越来越活跃，无论是学术界还是工业界，关于Fuzzing的项目，文章越来越多。虽然Fuzzing发展越来越好，但是有点像野蛮生长，很多术语不统一，这对Fuzzing的学习和传播非常不利。</p>
+<p>因此，查阅相关文献，尝试统一该领域各种解释。包括对术语解释，对fuzzer的每个阶段进行建模，解释其设计和选择之间的权衡利弊。</p>
+<h1>术语</h1>
+<ul>
+<li>PUT（Program Under Test）:被测试程序，或者待测试程序。</li>
+<li>Fuzzing：从预期的输入域选取输入值（选取值并非随机）去执行<strong>PUT。</strong></li>
+<li>Fuzz Testing：通过<strong>Fuzzing</strong>测试被测试程序是否违反安全策略。</li>
+<li>Fuzzer：在<strong>PUT</strong>做<strong>Fuzzing Testing</strong>的程序。</li>
+<li>Fuzzer Campaign：<strong>Fuzzer</strong>在具有特定安全策略的<strong>PUT</strong>上执行模糊测试的过程，目的在于找出<strong>PUT</strong>中的bug。</li>
+<li>Bug Oracle：某个程序，或者是<strong>Fuzzer</strong>中的组件，用于确定<strong>PUT</strong>的某次执行是否违反安全策略。</li>
+<li>Fuzz Configuration：能够控制Fuzz算法的输入参数集合。</li>
+<li>Seed：测试种子，用于构造测试用例。</li>
+<li>Seed Pool：种子集合。</li>
+</ul>
+<h1>分类</h1>
+<p>将fuzzer分为三类：黑盒、灰盒和白盒。</p>
+<h2 id="黑盒">黑盒</h2>
+<p>黑盒测试表示窥探不到PUT的内部状态，只能根据其输入输出来判断其行为；因此也被称为I/O驱动或数据型驱动测试。</p>
+<h2 id="白盒">白盒</h2>
+<p>白盒测试通过PUT的内部结构和收集执行PUT时信息来生成测试用例。相较于黑盒，白盒能够系统地探索PUT的内部状态空间。</p>
+<h2 id="灰盒">灰盒</h2>
+<p>灰盒介于黑盒和白盒之间，有时候它们之间的区别很模糊。</p>
+<p>灰盒是白盒一种变体，每次模糊测试只能从其中获取PUT的内部结构和执行PUT时的部分信息，依靠不完整和近似的信息来提高测试速度，以此来测试更多的输入。</p>
+<h1>Fuzz Testing算法</h1>
+<p>这是个通用算法，Fuzzer模型，覆盖目前大多数Fuzzing技术。</p>
+<p><img src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/Untitled.png" alt="Untitled"></p>
+<h2 id="Input">Input</h2>
+<ul>
+<li>C：Fuzz Configuration。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">t_{limit}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">imi</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：测试超时时间。</li>
+</ul>
+<h2 id="Output">Output</h2>
+<ul>
+<li>B：有限的bug集。</li>
+</ul>
+<h2 id="Preprocess">Preprocess</h2>
+<p>在<strong>Fuzz Campaign</strong>执行之前执行。由用户提供的<strong>Fuzz Configuration</strong>作为输入，处理后返回可修改（potentially-modified）的<strong>Fuzz Configuration</strong>，用于测试PUT。具体怎么实现，取决于Fuzz算法</p>
+<h3 id="实现方式">实现方式</h3>
+<ul>
+<li>插桩：这种方式主要应用于灰盒和白盒的<strong>Fuzzer</strong>，主要用于获取执行反馈，虽然获取执行反馈的方法有很多，但插桩的方式往往能获取到最有价值的反馈。插桩分为两种，静态插桩和动态插桩。
+<ul>
+<li>静态插桩：
+<ul>
+<li>在编译时对源码或者中间代码执行</li>
+<li>运行时间开销比动态插桩短</li>
+<li>如果需要对<strong>PUT</strong>的依赖库进行插桩，则需要对依赖库分别进行插桩，在进行相同编译。</li>
+</ul>
+</li>
+<li>动态插桩：
+<ul>
+<li>对<strong>PUT</strong>依赖库进行动态插桩相对于静态插桩更简单，但需要更高开销。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>内存Fuzzing：如果测试的程序很大，但有时只是需要测试其中的一部分功能时，可以先存储一份内存快照，在新的测试用例直接写入内存之前，恢复内存快照，这样能最小化重新启动程序所需开销。
+<ul>
+<li>内存API Fuzzing：不需要重新恢复<strong>PUT</strong>的状态，可以重复执行测试。缺点
+<ul>
+<li>发现bugs无法复现，因为没办法构造目标函数的调用上下文。</li>
+<li>不能捕获多个函数</li>
+<li>可靠性取决于入口函数，但入口函数的寻找非常困难。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="作用">作用</h3>
+<ul>
+<li>通过显式控制线程调度，可以触发程序不同的不确定性行为。（比如条件竞争）</li>
+<li>种子选择：
+<ul>
+<li>基本原则：种子数量最小化，测试覆盖范围最大化。
+<ul>
+<li>使用分支对数计数器，计算分支覆盖率。</li>
+<li>基于指令、分支和唯一基本块（basic blocks）数量计算覆盖率。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>种子修剪：更少的种子能减少内存的消耗和获得更大的吞吐量。（可以发生在当前的Preprocess，也可以发生在CONFUPDATE）
+<ul>
+<li>保证覆盖率不变的前提下，不断去迭代修剪种子。</li>
+<li>赋予数量小的种子更高的优先级，但会造成发现特殊<strong>bug</strong>数量比随机种子少。</li>
+<li>保留使用静态分析检测调用之间关系，扩展Fuzzer减少种子数量。</li>
+</ul>
+</li>
+<li>准备程序驱动：直接测试<strong>PUT</strong>比较困难时，可以先准备一个驱动程序。得手动准备，并且可能在整个测试过程中只会使用一次。</li>
+</ul>
+<h2 id="CONTINUE">CONTINUE</h2>
+<p>由一组配置（fuzz configuration）作为输入，返回布尔值，表示是否应该进行下一迭代，如在白盒测试中，如果没有发现更多的路径，那么就可以终止迭代。</p>
+<h2 id="SCHEDULING">SCHEDULING</h2>
+<p>三个输入参数，分别是<strong>C</strong>（fuzz Configuration），<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>e</mi><mi>l</mi><mi>a</mi><mi>p</mi><mi>s</mi><mi>e</mi><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">t_{elapsed}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight">se</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>上一次运行时间，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">t_{limit}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">imi</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>运行超时时间；通过这三个参数计算返回下一次迭代所需要<strong>conf</strong>（fuzz Configuration），这取决于<strong>Fuzzer</strong>的类型。</p>
+<h3 id="FCS（Fuzz-Configuration-Scheduling）问题">FCS（Fuzz Configuration Scheduling）问题</h3>
+<p>SCHEDULING算法也会有探索-利用冲突（<strong>exploration vs. exploitation</strong>）问题，是利用现有价值的配置信息，找出可能导致最有利的结果的配置，比如尽量找到更多的bug，还是保证配置信息拥有最大化的覆盖率。（算法开销可以消耗在获取更精确的信息上，以此来影响下一步决策，也可以花费在往当前被认为获得更有利的结果的<strong>fuzzing</strong>配置上。）</p>
+<ul>
+<li>黑盒<strong>FCS</strong>算法：因为获取到信息的局限性，给定配置只能得到的fuzz结果（包括crashes，bug数量和时间开销），因此，算法更倾向于选择能够获取更高成功率（获取crashes，bug）的配置。
+<ul>
+<li>均匀采样</li>
+<li>**WCCP/UW（Weighted Coupon Collector’s Problem with Unknown Weights）：**假设每一个配置信息最终都有一定成功率（能导致好的结果），并且随着时间的推移进行学习，概率的衰减保持明确的上限。</li>
+<li><strong>MAB（multi-armed bandit）：<strong>一般能科学地解决探索-利用问题。设计</strong>MAB</strong>算法能够精确利用未衰减的配置。</li>
+<li>标准化配置成功率：其他条件相同的情况下，能够更快模糊测试的配置，能够收集更多的bug，或者更快降低下一次成功概率的上限。</li>
+<li>BFF将fuzz迭代的顺序按固定迭代次数排序更改为按固定时间量排序。</li>
+</ul>
+</li>
+<li>灰盒<strong>FCS</strong>算法：灰盒中，FCS算法可以获取更丰富的信息，比如配置测试之后的覆盖率。
+<ul>
+<li>EA（evolutionary algorithm）：维护大量的配置，每个配置都值——fitness，从中选取合适的配置用于遗传转换，例如突变和重组产生下一代，之后，后代中的部分可能变为新的配置。但是使用这些配置的前提是更适合找到新的bug或者crashes。但是，是什么因素让这些配置更适合或者说怎样选择这些配置。
+<ul>
+<li>选择运行最快和最小的配置</li>
+<li>维护一个配置队列，循环选择</li>
+<li>使用选定的配置运行固定的次数</li>
+</ul>
+</li>
+<li>AFLFast对EA算法进行了三个方面的优化
+<ul>
+<li>在执行控制流配置中，选择被选择更少哪个，如果前面选择有冲突，则选择对应执行路径执行次数最少的配置。</li>
+<li>选择配置时不再是轮询选择，而是基于优先级选择配置。</li>
+<li>选择配置运行固定次数变为可变次数，取决于Power Schedule。</li>
+</ul>
+</li>
+<li>引入静态分析增强。</li>
+</ul>
+</li>
+</ul>
+<h2 id="INPUT-GENERATION">INPUT GENERATION</h2>
+<p>输入参数为可变的<strong>conf</strong>（Fuzz Configuration），输出为<strong>tcs</strong>（test cases）。因为测试用例本身内容的好坏，直接决定了bug是否会被触发，因此，<strong>INPUT GENERATION</strong>自然而然地成<strong>Fuzzer</strong>设计中最有影响的一环。根据技术实现将他们分为<strong>Generation-based和Mutation-based。</strong></p>
+<ul>
+<li><strong>Generation-based fuzzer or Model-based fuzzer</strong>：测试用例的产生取决于指定描述<strong>PUT</strong>预期输入的模型。</li>
+<li><strong>Mutation-based fuzzer or Model-less fuzzer</strong>：测试用例的产生来自给定输入种子的突变，因为种子只是举例输入，尽管数量很大，它也不能完整描述<strong>PUT</strong>预期输入空间，因此也被称为无模型（Model-less）</li>
+</ul>
+<h3 id="Model-based"><strong>Model-based</strong></h3>
+<ul>
+<li><strong>预定义模型（Predefined Model）</strong>
+<ul>
+<li>可以由用户设置。</li>
+<li>以系统调用模版形式定义一个输入模型，模版指定系统调用期望的数量和类型作为输入参数。</li>
+<li>fuzzer内置针对特定语言或语法的模型。</li>
+<li>支持特定网络协议模型，如TLS和NFC。</li>
+<li>解析一组给定的种子生成代码碎片，然后将代码碎片随机组合，并用它来变异种子生成测试用例。</li>
+<li>基于上一条，只针对XML和正则表达式。</li>
+</ul>
+</li>
+<li><strong>推断模型（Inferred Model）：<strong>不依赖预定义和用户输入，依赖自动化输入格式和逆向协议，但是应用较少，有点类似于插桩，模型推断可以发生在</strong>Preporcess</strong>和<strong>CONFUPDATE。</strong>
+<ul>
+<li>发生在<strong>Preporcess</strong>时：用PUT有用数据，预测合适的输入。
+<ul>
+<li>给定一组种子和语法，使用数据驱动的方式推断一个概率的上下文敏感的语法（probabilitistic context-sensitive grammar），然后使用它来生成新的种子集合，侧重点在于生成语义有效的输入。</li>
+<li>通过分析系统API日志学习内核API模型（<strong>kernel API model）</strong>，使用其生成可以调用API队列的C语言代码。</li>
+<li>将 JavaScript 代码分解为“代码块（<strong>code bricks</strong>）”，并使用静态分析和动态分析计算装配约束（<strong>ssembly constraints</strong>），用以描述何时可以将不同的代码快组装或合并在一起，用于生成语义合法的测试用例。</li>
+<li>使用神经网络机器学习算法从给定的测试文件集合学习模型。</li>
+</ul>
+</li>
+<li>发生在<strong>CONFUPDATE</strong>时：在每次模糊测试迭代后更新模型。
+<ul>
+<li>捕获程序产生的网络包推断网络协议模型，然后使用这个模型测试程序。</li>
+<li>内部构建状态机，并映射与状态相关的消息令牌，然后用此信息生成覆盖状态机中更多的状态的测试用例。</li>
+<li>通过观察I/O行为推断出Web服务的状态机，用这个模型扫描Web漏洞。</li>
+<li>从I/O样例集合中合成上下文不敏感的语法，然后使用它来测试程序。</li>
+<li>为添加到种子池的每个种子构建模型，然后用该模型从该种子生成新的输入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>编码器模型（Encoder Model）</strong>：通常用于测试解析某种文件格式的编码器程序，解析文件格式的不同可以被视为一种隐式模型。
+<ul>
+<li>使用隐式模型生成测试用例，程序切片会悄悄改变编码程序的行为，以至于产生轻微畸形的测试用例。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Model-less（Mutation-based）"><strong>Model-less（Mutation-based）</strong></h3>
+<p>随机测试生成满足指定路径条件的测试用例效率不高。</p>
+<ul>
+<li>位翻转（Bit-Flipping）
+<ul>
+<li>翻转固定的位数。</li>
+<li>随机翻转位数。</li>
+<li>采用用户配置决定翻转位数。</li>
+<li>对每个种子使用一组指数的突变率，并为突变率分配更多的迭代。</li>
+<li>利用白盒程序分析来推断每个种子好的突变率。</li>
+</ul>
+</li>
+<li>算数突变（Arithmetic Mutation）
+<ul>
+<li>选择一个字节型列作为整数，对整数进行简单的运算，用计算结果代替选择的字队列，这样可以将突变的影响限制在一个很小的数字内。</li>
+</ul>
+</li>
+<li>块突变（Block-based Mutation）：Block是种子的一个字节序列。
+<ul>
+<li>在种子的随机位置插入随机生成的Block。</li>
+<li>从种子中随机选择Block删除。</li>
+<li>随机选择Block替换为随机值。</li>
+<li>随机变换Block序列。</li>
+<li>使用一个随机Block改变种子大小。</li>
+<li>从一个种子中随机选取Block随机插入或替换掉另一个种子的Block。</li>
+</ul>
+</li>
+<li>字典突变（Dictionary-based Mutation）
+<ul>
+<li>使用一组预定义隐含重要语义权重的值进行突变。</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于白盒">基于白盒</h3>
+<p>有的Fuzzer利用白盒程序分析来查找有关 PUT 接收的输入的信息，将其用于黑盒或者灰盒测试。</p>
+<ul>
+<li>动态符号执行（Dynamic Symbolic Execution）
+<ul>
+<li>动态符号执行是传统的符号执行的变体，在动态符号执行过程中，符号执行和实际的执行（concrete input）会同时进行，因此被称为concolic（concrete + symbolic）testing。</li>
+<li>建立符号表达式。为执行过程中遇到的每一条分支指令建立一个路径公式，如果存在一个实际的输入，能够执行目标路径，那么就说该路径公式是可满足的。</li>
+</ul>
+</li>
+<li>Guided Fuzzing：使用静态分析或者动态分析来增强Fuzzing的效果。
+<ul>
+<li>使用开销较大的程序分析PUT，以此来获取有关于PUT的有用信息。</li>
+<li>使用上一条分析获取的有用信息生成测试用例。</li>
+<li>使用细粒度的污点分析来查找流入关键系统调用或API调用的输入字节（hot bytes）。
+<ul>
+<li>在编译时期执行静态分析，探索式查找可能包含错误的循环，例如空指针引用，然后通过污点分析计算输入字节与循环之间的关系，最后只将关键字节变为符号，运行动态符号执行。</li>
+<li>使用污点分析将每个路径约束和对应的字节联系起来，然后执行梯度下降式搜索算法，去引导突变朝解决约束的方向走。</li>
+<li>通过插桩比较和查找所有操作对象与给定输入之间的对应关系，来检测PUT中如何使用输入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PUT Mutation：如何绕过检验和验证。
+<ul>
+<li>stitched dynamic symbolic execution：在存在校验的情况下生成测试用例。
+<ul>
+<li>使用污点分析来校验和测试指令，并通过打补丁来绕过验证。当发现程序崩溃时，会使用正确的验证作为输入，以此来生成使未修改PUT崩溃的测试用例。</li>
+</ul>
+</li>
+<li>在上面方法的基础上，通过灰盒测试，能够有效渗透所有类型的条件分支。
+<ul>
+<li>首先使用一组NCC（Non-Critical Checks），它可以在不改变程序逻辑情况下进行分支转换。当<strong>fuzzing campaign</strong>发现新的路径停止时，选择一个NCC，对其进行转换，然后在修改过的PUT上重新进行<strong>fuzzing campaign</strong>；最后，当发现崩溃时，尝试使用符号执行在原始程序上复现。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="INPUT-EVALUATION">INPUT EVALUATION</h2>
+<p>这一步主要是决定如何处理执行结果。由conf（当前fuzz configuration）,tcs(test cases)， <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>O</mi><mrow><mi>b</mi><mi>u</mi><mi>g</mi></mrow></msub></mrow><annotation encoding="application/x-tex">O_{bug}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">ug</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>（fuzzer 内置参数）作为输入，输出执行信息（execinfos）和bug集合。</p>
+<h3 id="Bug-Oracle（O-bug-）">Bug Oracle（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>O</mi><mrow><mi>b</mi><mi>u</mi><mi>g</mi></mrow></msub></mrow><annotation encoding="application/x-tex">O_{bug}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">ug</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>）</h3>
+<ul>
+<li>将导致程序执行终止的致命性信号作为violation。
+<ul>
+<li>对内存漏洞十分有效。</li>
+</ul>
+</li>
+<li>使用<em><strong>sanitizer</strong></em>技术检测，有效检测不安全的，或预期之外的程序行为，以及中止程序。
+<ul>
+<li><strong>内存类型安全（Memory and Type Safety）</strong>：分为空间性和时间性错误。空间性错误指在对象之外被间接引用指向它原本指向的对象之外的情况下。时间性错误通常发生在指针失效后被引用。
+<ul>
+<li>在编译时对程序进行插桩，采用影子内存（shadow memory），允许每个内存地址在被解引用之前，快速地进行合法检查。</li>
+<li>在分配对象之间创建大块不可访问内存——红色空间（redzones），如果这些红色空间被指针访问了，那就有可能造成崩溃。</li>
+<li>在编译时插桩，将边界和时间信息与每个指针相关联，理论上可以检测所有的空间性和时间性错误。</li>
+<li>在编译时插桩，检测***C++***类型转换错误。</li>
+<li>在运行时检测原始程序中不可能的控制流转换，如找到非法篡改程序控制流的测试用例。</li>
+</ul>
+</li>
+<li><strong>未定义行为（Undefined Behaviors）</strong>
+<ul>
+<li>在编译时插桩，使用影子内存（shadow memory）来表示每个可寻址位是否已经被初始化，用于检测<em><strong>C</strong></em>和***C++***中使用未初始化内存而引起的未定义行为。</li>
+<li>编译时修改程序，可以检测错位指针、被零除、解引用空指针和整数溢出等未定义行为。</li>
+<li>编译时修改程序，检测数据竞争（data races）</li>
+</ul>
+</li>
+<li><strong>输入验证（Input Validation）</strong>：如XSS，SQL注入。
+<ul>
+<li>使用真实的Web浏览器解析测试用例，提取DOM树，并将它与成功执行XSS攻击的手动指定模式进行比较。</li>
+<li>通过使用数据库代理来拦截Web应用程序与数据库之间的通信，以此检测是否触发有害行为。</li>
+</ul>
+</li>
+<li><strong>语义差异（Semantic Difference）</strong>
+<ul>
+<li>与行为相似（但不相同）的程序相比较，之间的差异可能就是错误。</li>
+<li>在单个程序上使用多个不同的输入进行测试测试，将突变从PUT的输入映射到它的输出，可以用来识别信息泄漏。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="执行优化（Execution-Optimizations）">执行优化（Execution Optimizations）</h3>
+<p>每一次<strong>fuzz</strong>迭代都需要重新开启一个进程加载PUT，很浪费性能。现在的Fuzzer提供一个<strong>fork-server，<strong>每一次新的</strong>fuzz</strong>迭代可以对已经初始化的进程进行<strong>fork</strong>，降低迭代的开销。</p>
+<h3 id="分流（Triage）">分流（Triage）</h3>
+<p>分析和报告违反策略测试用例的过程，分为三个步骤：重复数据删除（Deduplication），优先级（prioritization）和测试用例最小化。</p>
+<ul>
+<li><strong>重复数据删除（Deduplication）</strong>：删除结果中触发相同错误测试用例的过程，理想情况下，每个测试用例都会触发一个独特的错误。可以减少硬盘空间的浪费和方便用户更简单理解结果。
+<ul>
+<li>堆栈回溯哈希（Stack Backtrace Hashing）：在程序崩溃是记录堆栈回溯，并更具回溯内容分配堆哈希。
+<ul>
+<li>只对函数名或函数地址进行哈希运算。</li>
+<li>同时对函数名和偏移量或行进行哈希运算。</li>
+<li>使用两个哈希：一个主要哈希，只对函数名进行哈希运算，将不同崩溃组合在一起。次要哈希，对函数名和行号，还可能包括不限数量的堆栈帧，进行哈希，更精确。</li>
+</ul>
+</li>
+<li>基于覆盖的重复数据删除（Coverage-based Deduplication）
+<ul>
+<li>记录PUT每条边的执行覆盖率，并粗略计算每条边命中次数。</li>
+</ul>
+</li>
+<li>语义感知分析重复数据删除（Semantics-aware Deduplication）
+<ul>
+<li>从每个崩溃中进行反向数据流分析，再从分析中恢复语义。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>优先级和可利用程度（Prioritization and Exploitability）</strong>
+<ul>
+<li>根据严重程度和独特性对有问题的测试用例进行分组和排名。</li>
+<li>使用简单污点分析进行分级。</li>
+</ul>
+</li>
+<li><strong>测试用例最小化（Test case minimization）</strong>：保证结果不变的前提下尽可能减小测试用例的大小。
+<ul>
+<li>尝试最小化与原始种子文件不同的位数。</li>
+<li>尝试通过在合适的情况下将字节设置为零和缩短测试用例的长度来简化测试用例。</li>
+<li>尝试通过以指数递减的方式删除相邻行或字节块来最小化文件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="CONFUPDATE（CONFIGURATION-UPDATING）">CONFUPDATE（CONFIGURATION UPDATING）</h2>
+<p>由C（fuzz configuration），conf（当前fuzz configuration）， 执行迭代后的信息（execinfos）作为输入，返回更新后的C（fuzz configuration）。</p>
+<p>不同于白灰盒，黑盒每一次迭代都不能够收集到任何允许它修改的信息，从而无法更新配置信息；而白灰盒可以通过迭代后得到的信息不断更新配置信息。因此，CONFUPDATE函数可以作为区分黑盒和白灰盒行为的重要角色。</p>
+<h3 id="进化种子池更新（Evolutionary-Seed-Pool-Update）">进化种子池更新（Evolutionary Seed Pool Update）</h3>
+<p>EA（Evolutionary Algorithm）维护一个种子池，里面会包含一些有希望的个体，随着<strong>fuzzing campaign</strong>的进行不断进化，可能导致新的种子被发现。</p>
+<ul>
+<li>使用节点或分支覆盖率作为计算点：如果测试用例发现新的分支或节点，则将它加入到种子池中。因此，种子池是代表所有可达路径多样化的工具，也可以代表PUT当前探索的情况。</li>
+</ul>
+<h3 id="维护minset（Maintaining-a-Minset）">维护minset（Maintaining a Minset）</h3>
+<p>创建新的配置时，可能结果集会非常大。因此，最好是能够维护一个**minset，**如能使覆盖率最大化，而本身最小化的测试用例集。</p>
+<ul>
+<li>维护一个专门用于配置更新的minset，完全删除不在minset中的配置。</li>
+<li>同上，但不删除配置，而是标记在minset中的配置优先级更高，被用于测试的机会更高，这样合理保持了队列循环速度和测试用例多样性之间的平衡。</li>
+</ul>
+<h1>参考文章</h1>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://2020.icse-conferences.org/details/icse-2020-Journal-First/82/The-Art-Science-and-Engineering-of-Fuzzing-A-Survey">The Art, Science, and Engineering of Fuzzing: A Survey (ICSE 2020 - Journal First) - ICSE 2020 (icse-conferences.org)</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40398985/article/details/103585735">https://blog.csdn.net/qq_40398985/article/details/103585735</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_38816924/article/details/114264772">https://blog.csdn.net/sinat_38816924/article/details/114264772</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">71ao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.71ao.top/2022/04/09/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9ATheArt-Science-andEngineeringofFuzzing-ASurvey/">http://www.71ao.top/2022/04/09/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9ATheArt-Science-andEngineeringofFuzzing-ASurvey/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.71ao.top" target="_blank">71ao's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/fuzz/">fuzz</a></div><div class="post_share"><div class="social-share" data-image="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-210449-landscape.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/11/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9AHighlyPreciseTaintAnalysisForAndroidApplication/"><img class="next-cover" src="https://playwin.oss-cn-shanghai.aliyuncs.com/picgo/backiee-214744-landscape.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">论文笔记：Highly Precise Taint Analysis For Android Application</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/43485833" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">71ao</div><div class="author-info__description">You are the apple of my eye</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/71aoo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/71aoo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:779244202@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">论文笔记：The Art, Science, and Engineering of Fuzzing: A Survey</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">论文目的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">术语</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%91%E7%9B%92"><span class="toc-number">4.1.</span> <span class="toc-text">黑盒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BD%E7%9B%92"><span class="toc-number">4.2.</span> <span class="toc-text">白盒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%81%B0%E7%9B%92"><span class="toc-number">4.3.</span> <span class="toc-text">灰盒</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">Fuzz Testing算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Input"><span class="toc-number">5.1.</span> <span class="toc-text">Input</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Output"><span class="toc-number">5.2.</span> <span class="toc-text">Output</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preprocess"><span class="toc-number">5.3.</span> <span class="toc-text">Preprocess</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">5.3.1.</span> <span class="toc-text">实现方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">5.3.2.</span> <span class="toc-text">作用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CONTINUE"><span class="toc-number">5.4.</span> <span class="toc-text">CONTINUE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SCHEDULING"><span class="toc-number">5.5.</span> <span class="toc-text">SCHEDULING</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FCS%EF%BC%88Fuzz-Configuration-Scheduling%EF%BC%89%E9%97%AE%E9%A2%98"><span class="toc-number">5.5.1.</span> <span class="toc-text">FCS（Fuzz Configuration Scheduling）问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INPUT-GENERATION"><span class="toc-number">5.6.</span> <span class="toc-text">INPUT GENERATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Model-based"><span class="toc-number">5.6.1.</span> <span class="toc-text">Model-based</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Model-less%EF%BC%88Mutation-based%EF%BC%89"><span class="toc-number">5.6.2.</span> <span class="toc-text">Model-less（Mutation-based）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%99%BD%E7%9B%92"><span class="toc-number">5.6.3.</span> <span class="toc-text">基于白盒</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INPUT-EVALUATION"><span class="toc-number">5.7.</span> <span class="toc-text">INPUT EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bug-Oracle%EF%BC%88O-bug-%EF%BC%89"><span class="toc-number">5.7.1.</span> <span class="toc-text">Bug Oracle（ObugO_{bug}Obug​）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%88Execution-Optimizations%EF%BC%89"><span class="toc-number">5.7.2.</span> <span class="toc-text">执行优化（Execution Optimizations）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%B5%81%EF%BC%88Triage%EF%BC%89"><span class="toc-number">5.7.3.</span> <span class="toc-text">分流（Triage）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CONFUPDATE%EF%BC%88CONFIGURATION-UPDATING%EF%BC%89"><span class="toc-number">5.8.</span> <span class="toc-text">CONFUPDATE（CONFIGURATION UPDATING）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%8C%96%E7%A7%8D%E5%AD%90%E6%B1%A0%E6%9B%B4%E6%96%B0%EF%BC%88Evolutionary-Seed-Pool-Update%EF%BC%89"><span class="toc-number">5.8.1.</span> <span class="toc-text">进化种子池更新（Evolutionary Seed Pool Update）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%B4%E6%8A%A4minset%EF%BC%88Maintaining-a-Minset%EF%BC%89"><span class="toc-number">5.8.2.</span> <span class="toc-text">维护minset（Maintaining a Minset）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">参考文章</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 71ao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'Apf54CiWnak4g05AYgmoRy2F-gzGzoHsz',
+      appKey: 'UcJUCGn8QyuNVFCfO7jNA4Jw',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
